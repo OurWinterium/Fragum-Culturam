@@ -1,5 +1,8 @@
 from pygame import *
 from random import *
+import pygame as pg
+import sys
+#pygame.init()
 #from pygame.locals import *
 init()
 mixer.init()
@@ -29,17 +32,21 @@ class Sprite(sprite.Sprite):
     def update(self):
         self.rect.y += self.speed
         self.rect.x += self.speed
-        #for e in events.get():
-        if event.key == pygame.MOUSEBUTTONUP:
-            lost += 1
-                #if self.rect.collidepoint(event.pos):
-                    #self.callback()
+        '''
+        for e in event.get():
+            if e.type == pg.MOUSEBUTTONDOWN:
+                if self.rect.collidepoint(event.pos):
+                    global lost
+                    lost += 1
+                    Fragaria.rect.x == randint(30, 650)
+                    Fragaria.rect.y == randint(379, 600)
+        '''
 
 fontTxt = font.SysFont('Arial', 30)
 
 Fragares = sprite.Group()
 for i in range(4):
-    Fragaria = Sprite('Fragaria.png', randint(30, 670), randint(379, 600), 0)
+    Fragaria = Sprite('Fragaria.png', randint(30, 650), randint(379, 600), 0)
     Fragares.add(Fragaria)
 
 clock = time.Clock()
@@ -52,6 +59,16 @@ while game:
     for e in event.get():
         if e.type == QUIT:
             game = False
+    #for e in events.get():
+            #if event.type == pygame.MOUSEBUTTONUP:
+                #lost += 1
+    for e in event.get():
+        if e.type == pg.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                #global lost
+                lost += 1
+                Fragaria.rect.x == randint(30, 650)
+                Fragaria.rect.y == randint(379, 600)
 
     window.blit(fontTxt.render('Собрано: '+str(lost), True, (255,255,255)), (240, 100))
     Fragares.update()

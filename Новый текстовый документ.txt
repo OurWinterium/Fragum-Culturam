@@ -1,0 +1,146 @@
+import pygame
+import random
+pygame.init()
+
+
+BACK = (102, 205, 170)
+WHITE = (500, 500, 500)
+CARD_COLOR = (47, 79, 79)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+BlUE = (0, 0, 255)
+RED = (255, 0, 0)
+GREEN = (0, 255, 51)
+BlUE = (0, 0, 255)
+ORANGE = (255, 123, 0)
+WHITE = (255, 255, 255)
+YELLOW = (255, 255, 0)
+LIGHT_GREEN = (200, 255, 200)
+LIGHT_RED = (250, 128, 114)
+BLACK = (0, 0, 0)
+DARK_BLUE = (0, 0, 100)
+LIGHT_BLUE = (80, 80, 255)
+
+window = pygame.display.set_mode((500, 500))
+window.fill(BACK)
+
+
+class TextArea():
+    def __init__(self, x, y, width, height, color):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.fill_color = color
+
+    def change_color(self, new_color):
+        self.fill_color = new_color
+
+    def fill(self):
+        pygame.draw.rect(window, self.fill_color, self.rect)
+
+    def outline(self, frame_color, frame_width):
+        pygame.draw.rect(window, frame_color, self.rect, frame_width)
+
+class Label(TextArea):
+    def set_text(self, text, font_size, text_color):
+        self.image = pygame.font.SysFont("verdana", font_size).render(text, True, text_color)
+
+    def draw(self, shift_x, shift_y):
+        self.fill()
+        window.blit(self.image, (self.rect.x + shift_x, self.rect.y + shift_y))
+
+
+f1 = pygame.font.Font(None, 80)
+text1 = f1.render('Clicker game', 1, (47, 79, 79))
+
+
+window.blit(text1, (110, 85))
+
+cards = [0, 1, 2, 3]
+
+cards[0] = Label(40, 190, 90, 110, CARD_COLOR)
+cards[0].set_text("Click", 50, WHITE)
+cards[0].draw(9, 35)
+
+cards[1] = Label(150, 190, 90, 110, CARD_COLOR)
+cards[1].set_text("Click", 50, WHITE)
+cards[1].draw(9, 35)
+
+cards[2] = Label(260, 190, 90, 110, CARD_COLOR)
+cards[2].set_text("Click", 50, WHITE)
+cards[2].draw(9, 35)
+
+cards[3] = Label(370, 190, 90, 110, CARD_COLOR)
+cards[3].set_text("Click", 50, WHITE)
+cards[3].draw(9, 35)
+
+timer = Label(20, 10, 150, 50, BACK)
+timer.set_text("Время: 0", 40, CARD_COLOR)
+timer.draw(10, 10)
+
+
+
+counter = Label(370, 10, 150, 50,BACK)
+counter.set_text("Счёт: 0", 40, CARD_COLOR)
+counter.draw(10, 10)
+X1 = 40
+cards = list()
+for i in range(4):
+    card = Label(X1, 190, 90, 110, CARD_COLOR)
+    card.outline(WHITE, 10)
+    card.set_text("Click", 50, WHITE)
+    cards.append(card)
+    X1 += 110
+
+import time
+
+clock = pygame.time.Clock()
+wait = 0
+points = 0
+start_time = time.time()
+currect_time = time.time()
+while True:
+    if wait == 0:
+        dgt = random.randint(0,3)
+        for i in range(4):
+            cards[i].change_color(CARD_COLOR)
+            if i == dgt:
+                cards[i].draw(11,40)
+            else:
+                cards[i].fill()
+        wait = 20
+    else:
+        wait -= 1
+
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            x, y = event.pos
+            for i in range(4):
+                if cards[i].rect.collidepoint(x, y):
+                    if i == dgt:
+                        cards[i].change_color(GREEN)
+                        points += 1
+                    else:
+                        cards[i].change_color(RED)
+                        points -= 1
+                    cards[i].fill()
+                    counter.set_text("Счёт: " + str(points), 40, CARD_COLOR)
+                    counter.draw(10, 10)
+
+    new_time = time.time()
+    if new_time - currect_time >= 1:
+        timer.set_text("Время: " + str( int(new_time - start_time) ), 40, CARD_COLOR)
+        timer.draw(10, 10)
+        currect_time = new_time
+
+    if points >= 5:
+        win = Label(0, 0, 500, 500, LIGHT_GREEN)
+        win.set_text("УСПЕХ!", 60, DARK_BLUE)
+        win.draw(180, 240)
+        
+    if new_time - start_time >= 10:
+        lose = Label(0, 0, 500, 500, LIGHT_RED)
+        lose.set_text("ПОРАЖЕНИЕ!", 60, DARK_BLUE)
+        lose.draw(170, 240)
+    
+    pygame.display.update()
+    clock.tick(40)
+pygame.display.update()
