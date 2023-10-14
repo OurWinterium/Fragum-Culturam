@@ -47,10 +47,23 @@ class Svinota(sprite.Sprite):
         self.rect.y += self.speed
         self.rect.x += self.speed
 
-    class Demon(sprite.Sprite):
+class Demon(sprite.Sprite):
     def __init__(self, sprite_image, spriteX, spriteY, sprite_speed):
         super().__init__()
         self.image = transform.scale(image.load(sprite_image), (80, 80))
+        self.rect = self.image.get_rect()
+        self.rect.x = spriteX
+        self.rect.y = spriteY
+        self.speed = sprite_speed
+
+    def update(self):
+        self.rect.y += self.speed
+        self.rect.x += self.speed
+
+class Glaz(sprite.Sprite):
+    def __init__(self, sprite_image, spriteX, spriteY, sprite_speed):
+        super().__init__()
+        self.image = transform.scale(image.load(sprite_image), (300, 222))
         self.rect = self.image.get_rect()
         self.rect.x = spriteX
         self.rect.y = spriteY
@@ -97,8 +110,8 @@ FPS = 60
 
 game = True
 
-svinota_speed_x = 15
-svinota_speed_y = 15
+svinota_speed_x = 5
+svinota_speed_y = 5
 
 svin_factor = 0
 
@@ -109,6 +122,13 @@ svindown = 0
 aboba = 0
 
 helldown = 0
+
+factor = 0
+
+demon_speed_x = 25
+demon_speed_y = 25
+
+glaz_factor = 0
 
 while game:
     window.blit(background, (0, 0))
@@ -161,6 +181,12 @@ while game:
                         ded_svinota.play()
                         ded_svinota.play()
                         ded_svinota.play()
+            if balance >= 100 and aboba == 1 and factor == 0 and glaz_factor == 1:
+                if glaz.rect.collidepoint(x, y):
+                    demon = Demon('demon.png', randint(20, 430), randint(20, 430), 0)
+                    Mobs.add(demon)
+                    glaz_factor += 1
+                    factor += 1
     
     if balance >= 25 and svinota == False and svin_factor == 0:
         Svinota = Svinota('svinota.png', randint(15, 330), randint(15, 380), 0)
@@ -237,6 +263,55 @@ while game:
             helldown += 1
         if helldown >= 120:
             helldown = 0
+
+    if balance >= 100 and aboba == 1 and factor == 0:
+        glaz = Glaz('glaz_1.png', 800, 260, 0)
+        Fragares.add(glaz)
+        glaz_factor += 1
+
+    if balance >= 100 and aboba == 1 and factor == 1:
+        demon.rect.x += demon_speed_x
+        demon.rect.y += demon_speed_y
+        if sprite.collide_rect(Fragaria_1, demon):
+            balance += 1
+            Fragaria_1.rect.x = randint(20, 440)
+            Fragaria_1.rect.y = randint(20, 430)
+        if sprite.collide_rect(Fragaria_2, demon):
+            balance += 1
+            Fragaria_2.rect.x = randint(20, 440)
+            Fragaria_2.rect.y = randint(20, 430)
+        if sprite.collide_rect(Fragaria_3, demon):
+            balance += 1
+            Fragaria_3.rect.x = randint(20, 440)
+            Fragaria_3.rect.y = randint(20, 430)
+        if sprite.collide_rect(Fragaria_4, demon):
+            balance += 1
+            Fragaria_4.rect.x = randint(20, 440)
+            Fragaria_4.rect.y = randint(20, 430)
+        if sprite.collide_rect(Fragaria_5, demon):
+            balance += 1
+            Fragaria_5.rect.x = randint(20, 440)
+            Fragaria_5.rect.y = randint(20, 430)
+        if sprite.collide_rect(Fragaria_6, demon):
+            balance += 1
+            Fragaria_6.rect.x = randint(20, 440)
+            Fragaria_6.rect.y = randint(20, 430)
+        if sprite.collide_rect(Fragaria_7, demon):
+            balance += 1
+            Fragaria_7.rect.x = randint(20, 440)
+            Fragaria_7.rect.y = randint(20, 430)
+        if sprite.collide_rect(Fragaria_8, demon):
+            balance += 1
+            Fragaria_8.rect.x = randint(20, 440)
+            Fragaria_8.rect.y = randint(20, 430)
+        if demon.rect.x < 15:
+            demon_speed_x *= -1
+        if demon.rect.x > 430:
+            demon_speed_x *= -1
+        if demon.rect.y < 15:
+            demon_speed_y *= -1
+        if demon.rect.y > 430:
+            demon_speed_y *= -1
 
     window.blit(fontTxt.render('Баланс: '+str(balance), True, (255,255,255)), (733, 167))
     Fragares.update()
