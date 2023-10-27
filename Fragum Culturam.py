@@ -9,15 +9,17 @@ mixer.init()
 window = display.set_mode((1050, 525))
 display.set_caption("Fragum Culturam")
 background = transform.scale(image.load("fon.jpg"), (1050, 525))
-
+'''
 mixer.music.load('Sound_2.mp3')
 mixer.music.play(-1)
-
+mixer.music.fade_ms(60)
+'''
 damage_svinota = mixer.Sound('damage_svinota.ogg')
 ded_svinota = mixer.Sound('ded_svinota.ogg')
 svinota_p = mixer.Sound('dovolnoe-hryukane-bolshim-pyatachkom.ogg')
 svinota_est = mixer.Sound('chavkan-e-hryukan-e.ogg')
 pomehi = mixer.Sound('zatihayuschie-pomehi.ogg')
+Demon_Axaxa = mixer.Sound('demon.ogg')
 
 balance = 0
 
@@ -50,7 +52,7 @@ class Svinota(sprite.Sprite):
 class Demon(sprite.Sprite):
     def __init__(self, sprite_image, spriteX, spriteY, sprite_speed):
         super().__init__()
-        self.image = transform.scale(image.load(sprite_image), (80, 80))
+        self.image = transform.scale(image.load(sprite_image), (160, 60))
         self.rect = self.image.get_rect()
         self.rect.x = spriteX
         self.rect.y = spriteY
@@ -130,8 +132,21 @@ demon_speed_y = 25
 
 glaz_factor = 0
 
+music_factor = 0
+
 while game:
     window.blit(background, (0, 0))
+    
+    if music_factor == 0:
+        mixer.music.load('Sound_2.mp3')
+        mixer.music.play(-1)
+        music_factor += 1
+
+    if music_factor == 1 and aboba == 2 and glaz_factor == 1:
+        mixer.music.load('Not A Clever Pony — The Stars Will Aid In Her Escape.mp3')
+        mixer.music.play(-1)
+        music_factor += 1
+
     for e in event.get():
         if e.type == QUIT:
             game = False
@@ -181,10 +196,11 @@ while game:
                         ded_svinota.play()
                         ded_svinota.play()
                         ded_svinota.play()
-            if balance >= 100 and aboba == 1 and factor == 0 and glaz_factor == 1:
+            if balance >= 100 and aboba == 2 and factor == 0 and glaz_factor == 0:
                 if glaz.rect.collidepoint(x, y):
-                    demon = Demon('demon.png', randint(20, 430), randint(20, 430), 0)
+                    demon = Demon('demon.png', randint(20, 350), randint(20, 440), 0)
                     Mobs.add(demon)
+                    Demon_Axaxa.play()
                     glaz_factor += 1
                     factor += 1
     
@@ -248,11 +264,11 @@ while game:
             svinota_speed_x *= -1
         if Svinota.rect.y < 15:
             svinota_speed_y *= -1
-        if Svinota.rect.y > 380:
+        if Svinota.rect.y > 385:
             svinota_speed_y *= -1
 
     if balance >= 75 and aboba == 0:
-        mixer.music.pause()
+        mixer.music.stop()
         aboba += 1
 
     if balance >= 85 and aboba == 1:
@@ -267,9 +283,9 @@ while game:
     if balance >= 100 and aboba == 1 and factor == 0:
         glaz = Glaz('glaz_1.png', 800, 260, 0)
         Fragares.add(glaz)
-        glaz_factor += 1
+        aboba += 1
 
-    if balance >= 100 and aboba == 1 and factor == 1:
+    if balance >= 100 and aboba == 2 and factor == 1:
         demon.rect.x += demon_speed_x
         demon.rect.y += demon_speed_y
         if sprite.collide_rect(Fragaria_1, demon):
@@ -306,11 +322,11 @@ while game:
             Fragaria_8.rect.y = randint(20, 430)
         if demon.rect.x < 15:
             demon_speed_x *= -1
-        if demon.rect.x > 430:
+        if demon.rect.x > 350:
             demon_speed_x *= -1
         if demon.rect.y < 15:
             demon_speed_y *= -1
-        if demon.rect.y > 430:
+        if demon.rect.y > 440:
             demon_speed_y *= -1
 
     window.blit(fontTxt.render('Баланс: '+str(balance), True, (255,255,255)), (733, 167))
